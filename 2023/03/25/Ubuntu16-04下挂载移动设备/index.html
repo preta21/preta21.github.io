@@ -1,0 +1,527 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Ubuntu16.04下挂载移动设备 | SEANAMO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kunta">
+    
+
+    
+    <meta name="description" content="Ubuntu版本：16.04.7 LTS 注意，过程是，先删除原有分区；再分区；再对分区进行格式化；再进行挂载。  删除硬盘原有分区   在源NVMeCHA烧录成功后，使用nvme cli的命令  1sudo nvme list 应该能够看到节点，如 nvme0n1。 查看当前连接到的设备分区状态 1sudo fdisk -l 若硬盘已存在分区，需要先删除已有分区。 12345678sudo pa">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu16.04下挂载移动设备">
+<meta property="og:url" content="http://example.com/2023/03/25/Ubuntu16-04%E4%B8%8B%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E8%AE%BE%E5%A4%87/index.html">
+<meta property="og:site_name" content="SEANAMO">
+<meta property="og:description" content="Ubuntu版本：16.04.7 LTS 注意，过程是，先删除原有分区；再分区；再对分区进行格式化；再进行挂载。  删除硬盘原有分区   在源NVMeCHA烧录成功后，使用nvme cli的命令  1sudo nvme list 应该能够看到节点，如 nvme0n1。 查看当前连接到的设备分区状态 1sudo fdisk -l 若硬盘已存在分区，需要先删除已有分区。 12345678sudo pa">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-03-25T13:53:00.000Z">
+<meta property="article:modified_time" content="2023-03-25T13:55:35.189Z">
+<meta property="article:author" content="kunta">
+<meta property="article:tag" content="linux 系统">
+<meta name="twitter:card" content="summary">
+
+    
+    <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/icons8-debian-16.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/icons8-seal-circus-50.png" alt="SEANAMO" title="SEANAMO"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="SEANAMO">SEANAMO</a></h1>
+				<h2 class="blog-motto">kunta-seana 技术集结号</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:example.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2023/03/25/Ubuntu16-04下挂载移动设备/" title="Ubuntu16.04下挂载移动设备" itemprop="url">Ubuntu16.04下挂载移动设备</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kunta" target="_blank" itemprop="author">kunta</a>
+		
+  <p class="article-time">
+    <time datetime="2023-03-25T13:53:00.000Z" itemprop="datePublished"> Published 2023-03-25</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>Ubuntu版本：<br>16.04.7 LTS</p>
+<p>注意，过程是，<strong>先删除原有分区；再分区；再对分区进行格式化；再进行挂载</strong>。</p>
+<ol start="0">
+<li>删除硬盘原有分区</li>
+</ol>
+<blockquote>
+<p>在源NVMeCHA烧录成功后，使用<code>nvme cli</code>的命令</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nvme list</span><br></pre></td></tr></table></figure>
+<p>应该能够看到节点，如 <code>nvme0n1</code>。</p>
+<p>查看当前连接到的设备分区状态</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk -l</span><br></pre></td></tr></table></figure>
+<p><em>若硬盘已存在分区，需要先删除已有分区</em>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo parted /dev/nvme0n1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">在(parted)下输入`p` (<span class="built_in">print</span>)将会列出磁盘的分区号。</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">按照分区号删除分区。比如分区的number为1,则</span></span><br><span class="line">(parted) rm 1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或者使用 fdisk 命令中的删除选项 d</span></span><br><span class="line">Command (m for help) d</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>删除分区后，再次打印磁盘信息（<code>(parted) p</code>），则无分区信息。</p>
+<p>分区可使用的命令有 <code>fdisk</code>, <code>parted</code>, <code>gparted</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo fdisk /dev/nvme0n1</span><br><span class="line"></span><br><span class="line">sudo parted /dev/nvme0n1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">图形化界面</span></span><br><span class="line">sudo gparted</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>使用<code>fdisk</code> 分区</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看所有磁盘信息，找到插入的磁盘的块设备目录</span></span><br><span class="line">sudo fdisk -l</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">比如磁盘目录为 /dev/nvme0n1</span></span><br><span class="line">sudo fdisk /dev/nvme0n1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">进入 fdisk 命令的操作内，</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">会打印出 (parted)...</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">注意看打印信息，fdisk会默认为空的插入设备写入 MBR (dos) 格式的分区标签</span></span><br><span class="line">Command (m for help) n # 创建新分区</span><br><span class="line">Command (m for help) p # 创建主分区</span><br><span class="line">Command (m for help) w # 写入分区信息</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">退出后，保存分区信息</span></span><br><span class="line">partprobe</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看分区结果</span></span><br><span class="line">sudo fdisk -l</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对创建的分区格式化（假定分区名称为： /dev/nvme0n1p1）</span></span><br><span class="line">sudo mkfs.ext4 /dev/nvme0n1p1</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">创建分区的挂载目录</span></span><br><span class="line">sudo mkdir /mnt/nvmp</span><br><span class="line"></span><br><span class="line">sudo mount /dev/nvme0n1p1 /mnt/nvmp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看硬盘使用状况</span></span><br><span class="line">df -h</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>使用<code>parted</code> 分区<blockquote>
+<p>使用 parted 命令可以管理较大的分区，比如 2T 以上的分区。</p>
+</blockquote>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo parted /dev/nvme0n1</span><br><span class="line"></span><br><span class="line">(parted) p # print</span><br><span class="line">(parted) mklabel gpt # 如要创建 msdos 格式分区，则执行 mklabel msdos</span><br><span class="line">Warning: The existing disk label on /dev/nvme0n1 will be destroyed and all data on this disk will be lost. Do you want to continue?</span><br><span class="line">Yes/No? y                                                                 </span><br><span class="line">(parted) p</span><br><span class="line">Model: NVMe Device (nvme)</span><br><span class="line">Disk /dev/nvme0n1: 250GB</span><br><span class="line">Sector size (logical/physical): 512B/512B</span><br><span class="line">Partition Table: gpt</span><br><span class="line">Disk Flags: </span><br><span class="line"></span><br><span class="line">Number  Start  End  Size  File system  Name  Flags</span><br><span class="line"></span><br><span class="line">(parted) mkpart primary 0 1GB # mkpart PART-TYPE START END</span><br><span class="line">Warning: The resulting partition is not properly aligned for best performance.</span><br><span class="line">Ignore/Cancel? i                                                          </span><br><span class="line">(parted) p                                                                </span><br><span class="line">Model: NVMe Device (nvme)</span><br><span class="line">Disk /dev/nvme0n1: 250GB</span><br><span class="line">Sector size (logical/physical): 512B/512B</span><br><span class="line">Partition Table: msdos</span><br><span class="line">Disk Flags: </span><br><span class="line"></span><br><span class="line">Number  Start  End     Size    Type     File system  Flags</span><br><span class="line"> 1      512B   1000MB  1000MB  primary               lba</span><br><span class="line"></span><br><span class="line">(parted) q</span><br><span class="line">Information: You may need to update /etc/fstab.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">使用 lsblk 命令查看分区名称</span></span><br><span class="line">lsblk</span><br><span class="line">NAME        MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT</span><br><span class="line">nvme0n1     259:0    0 232.9G  0 disk </span><br><span class="line">└─nvme0n1p1 259:2    0   2.3G  0 part </span><br><span class="line">sda           8:0    0 931.5G  0 disk </span><br><span class="line">├─sda2        8:2    0 930.1G  0 part /</span><br><span class="line">├─sda3        8:3    0   977M  0 part [SWAP]</span><br><span class="line">└─sda1        8:1    0   512M  0 part /boot/efi</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">对分区进行 etx4 格式化</span></span><br><span class="line">sudo mkfs.ext4 /dev/nvme0n1p1</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>也可以在 parted 命令模式下只输入 parted，根据提示创建分区</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">sudo parted /dev/nvme0n1</span><br><span class="line">(parted) mkpart</span><br><span class="line">Partition type?  primary/extended? p                                      </span><br><span class="line">File system type?  [ext2]? ext4                                           </span><br><span class="line">Start? 0                                                                  </span><br><span class="line">End? 1%</span><br><span class="line">Warning: The resulting partition is not properly aligned for best performance.</span><br><span class="line">Ignore/Cancel? i                                                          </span><br><span class="line">(parted) p                                                                </span><br><span class="line">Model: NVMe Device (nvme)</span><br><span class="line">Disk /dev/nvme0n1: 250GB</span><br><span class="line">Sector size (logical/physical): 512B/512B</span><br><span class="line">Partition Table: msdos</span><br><span class="line">Disk Flags: </span><br><span class="line"></span><br><span class="line">Number  Start  End     Size    Type     File system  Flags</span><br><span class="line"> 1      512B   2501MB  2501MB  primary  ext4         lba</span><br><span class="line"></span><br><span class="line">(parted)</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>挂载设备的过程</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">建立挂载的文件夹</span></span><br><span class="line">mkdir /mnt/nvmp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将设备挂载到指定文件夹</span></span><br><span class="line">sudo mount /dev/nvme0n1 /mnt/nvmp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">到挂载目录下访问设备</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">可进行数据操作</span></span><br><span class="line">cd /mnt/nvmp</span><br><span class="line">ls</span><br><span class="line">sudo vim tmp.txt</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>卸载设备的过程</li>
+</ol>
+<blockquote>
+<p>卸载设备首先要退出当前挂载目录</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~</span><br><span class="line">sudo umount /mnt/nvmp</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如出现 “target is busy”提示，使用 fuser 命令终止还在使用设备的进程</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查看使用当前挂载设备的进程</span></span><br><span class="line">fuser -mv /mnt/nvmp</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">终止占用的进程</span></span><br><span class="line">fuser -kv /mnt/nvmp</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">最终卸载设备</span></span><br><span class="line">sudo umount /mnt/nvmp</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>查看设备状态的命令</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://daemon369.github.io/linux/2018/01/06/01-get-disks-info-in-linux">参考链接…</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">df -h</span><br><span class="line"></span><br><span class="line">lsblk</span><br><span class="line"></span><br><span class="line">sudo fdisk -l</span><br><span class="line"></span><br><span class="line">lshw </span><br><span class="line"></span><br><span class="line">blkid</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/linux-系统/">linux 系统</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://example.com/2023/03/25/Ubuntu16-04%E4%B8%8B%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E8%AE%BE%E5%A4%87/" data-title="Ubuntu16.04下挂载移动设备 | SEANAMO" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2023/03/25/shell脚本修改网络代理/" title="shell脚本修改网络代理">
+  <strong>上一篇：</strong><br/>
+  <span>
+  shell脚本修改网络代理</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2023/03/25/hexo-博客配置过程/"  title="hexo 博客配置过程">
+ <strong>下一篇：</strong><br/> 
+ <span>hexo 博客配置过程
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/linux-系统/" title="linux 系统">linux 系统<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/test/" title="test">test<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/系统配置/" title="系统配置">系统配置<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.neu.edu.cn" target="_blank" title="东百带学">东百带学</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.henu.edu.cn" target="_blank" title="开封师专">开封师专</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> Kunta-Seana <br/>
+			欢迎来到我的技术世界</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2023 
+		
+		<a href="/about" target="_blank" title="kunta">kunta</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?e6d1f421bbc9962127a50488f9ed37d1";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
