@@ -15,25 +15,28 @@
 
   <meta charset="UTF-8">
   
-    <title>心得2023-3-26 | SEANAMO</title>
+    <title>Ubuntu16.04+Vscode搭建Latex环境 | SEANAMO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="kunta">
     
 
     
-    <meta name="description" content="在 Vivado 工程中编辑了新的代码文件后，一定要通过Vivado界面-&gt;source-&gt;add新的代码文件，不然综合仍然会出错，找不到文件。">
+    <meta name="description" content="系统：Ubuntu16.04.7  安装apt-file工具  apt-file工具可以很方便地查找当前Ubuntu版本下，对应软件所需要的库名称。  12345sudo apt install apt-file# 安装之后首先执行sudo apt-file update# apt-file 会根据 sources.list中的源来获取软件库 比如，想安装latax编译器xetex，则键入 123">
 <meta property="og:type" content="article">
-<meta property="og:title" content="心得2023-3-26">
-<meta property="og:url" content="http://example.com/2023/03/26/%E5%BF%83%E5%BE%972023-3-26/index.html">
+<meta property="og:title" content="Ubuntu16.04+Vscode搭建Latex环境">
+<meta property="og:url" content="http://example.com/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/index.html">
 <meta property="og:site_name" content="SEANAMO">
-<meta property="og:description" content="在 Vivado 工程中编辑了新的代码文件后，一定要通过Vivado界面-&gt;source-&gt;add新的代码文件，不然综合仍然会出错，找不到文件。">
+<meta property="og:description" content="系统：Ubuntu16.04.7  安装apt-file工具  apt-file工具可以很方便地查找当前Ubuntu版本下，对应软件所需要的库名称。  12345sudo apt install apt-file# 安装之后首先执行sudo apt-file update# apt-file 会根据 sources.list中的源来获取软件库 比如，想安装latax编译器xetex，则键入 123">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2023-03-26T12:06:03.000Z">
-<meta property="article:modified_time" content="2023-03-26T12:07:42.610Z">
+<meta property="og:image" content="http://example.com/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/latex_workshop.png">
+<meta property="og:image" content="http://example.com/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/settings.png">
+<meta property="article:published_time" content="2023-03-26T12:38:10.000Z">
+<meta property="article:modified_time" content="2023-03-26T13:03:28.084Z">
 <meta property="article:author" content="kunta">
 <meta property="article:tag" content="FPGA NVMe Linux-kernel">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/latex_workshop.png">
 
     
     <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
@@ -95,14 +98,14 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2023/03/26/心得2023-3-26/" title="心得2023-3-26" itemprop="url">心得2023-3-26</a>
+      <a href="/2023/03/26/Ubuntu16-04-Vscode搭建Latex环境/" title="Ubuntu16.04+Vscode搭建Latex环境" itemprop="url">Ubuntu16.04+Vscode搭建Latex环境</a>
   </h1>
   <p class="article-author">By
        
 		<a href="/about" title="kunta" target="_blank" itemprop="author">kunta</a>
 		
   <p class="article-time">
-    <time datetime="2023-03-26T12:06:03.000Z" itemprop="datePublished"> Published 2023-03-26</time>
+    <time datetime="2023-03-26T12:38:10.000Z" itemprop="datePublished"> Published 2023-03-26</time>
     
   </p>
 </header>
@@ -115,7 +118,35 @@
 		
 		</div>
 		
-		<p>在 Vivado 工程中编辑了新的代码文件后，一定要通过Vivado界面-&gt;source-&gt;add新的代码文件，不然综合仍然会出错，找不到文件。</p>
+		<p>系统：Ubuntu16.04.7</p>
+<ol>
+<li><p>安装apt-file工具</p>
+<blockquote>
+<p><code>apt-file</code>工具可以很方便地查找当前Ubuntu版本下，对应软件所需要的库名称。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install apt-file</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装之后首先执行</span></span><br><span class="line">sudo apt-file update</span><br><span class="line"><span class="comment"># apt-file 会根据 sources.list中的源来获取软件库</span></span><br></pre></td></tr></table></figure>
+<p>比如，想安装latax编译器<code>xetex</code>，则键入</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-file find xetex</span><br><span class="line"><span class="comment"># ro</span></span><br><span class="line"><span class="comment"># sudo apt-file search xetex</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装<code>Latex</code>所需的环境</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装latex</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install texlive-latex-base</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装中文环境</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install latex-cjk-all</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装额外包</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install texlive-latex-extra</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装图形界面texmaker</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install texmaker</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装xelatex</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install texlive-xetex</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装publisher</span></span><br><span class="line"></span><br><span class="line">sudo apt-get install texlive-publishers</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Vscode中安装插件<code>LaTeX Workshop</code></p>
+</li>
+</ol>
+<img src="/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/latex_workshop.png" class="" title="latex-workshop插件">
+
+<ol start="4">
+<li>配置插件。配置其编译工具，并使它支持中文。</li>
+</ol>
+<p>打开Vscode-&gt;Settings，搜索latex-workshop.latex.recipes，然后点击Edit in settings.json</p>
+<img src="/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/settings.png" class="" title="vscode-settings">
+
+<ol start="5">
+<li>然后就可以编辑一个latex文本执行一下试一试。<br>需要注意的是，大一点的Latex项目，比如简历模板，都是不只一个文件的，需要很多的配置文件。如果依赖文件不全必报错。尤其是使用第三方模板的时候一定要注意把项目的文件都下载全咯。<br>这里给出我最近使用的一个建立模板的文件目录。
+给出简历模板的<a target="_blank" rel="noopener" href="https://www.overleaf.com/latex/templates/chinese-resume-template-zhong-wen-jian-li-mo-ban/fbdypsjmgwbb">源链接</a><br>在这个overleaf上不能直接下载模板，但是可以在线编辑，也非常方便。不过我这里还是一个一个文件地下载复现了该项目。读者也可以这样做。版权问题，我就本地用了，不做分享。</li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/430417439">简历模板推荐（知乎）</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -128,7 +159,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://example.com/2023/03/26/%E5%BF%83%E5%BE%972023-3-26/" data-title="心得2023-3-26 | SEANAMO" data-tsina="" class="share clearfix">
+	  <div data-url="http://example.com/2023/03/26/Ubuntu16-04-Vscode%E6%90%AD%E5%BB%BALatex%E7%8E%AF%E5%A2%83/" data-title="Ubuntu16.04+Vscode搭建Latex环境 | SEANAMO" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
@@ -141,19 +172,11 @@
 	
 <nav class="article-nav clearfix">
  
- <div class="prev" >
- <a href="/2023/03/26/Ubuntu16-04-Vscode搭建Latex环境/" title="Ubuntu16.04+Vscode搭建Latex环境">
-  <strong>上一篇：</strong><br/>
-  <span>
-  Ubuntu16.04+Vscode搭建Latex环境</span>
-</a>
-</div>
-
 
 <div class="next">
-<a href="/2023/03/26/FPGA领域顶级会议/"  title="FPGA领域顶级会议">
+<a href="/2023/03/26/心得2023-3-26/"  title="心得2023-3-26">
  <strong>下一篇：</strong><br/> 
- <span>FPGA领域顶级会议
+ <span>心得2023-3-26
 </span>
 </a>
 </div>
