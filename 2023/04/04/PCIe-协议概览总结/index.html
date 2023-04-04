@@ -1,0 +1,518 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H9YY5KLSE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-8H9YY5KLSE');
+  </script>
+
+  <meta charset="UTF-8">
+  
+    <title>PCIe 协议概览总结 | SEANAMO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kunta">
+    
+
+    
+    <meta name="description" content="PCIe总线是一种高速差分总线。（高速差分总线代替并行总线也是大势所趋）。与单端并行信号相比，高速差分总线可以使用更高的时钟频率，更少的信号线，完成之前需要许多单端并行总线才能达到的总线带宽。  PCIe总线继承了一些PCI总线中的核心思想，比如“桥”的概念，PCIe总线将通过一种类似的方式进行总线扩展(Switch)。PCI总线与设备之间是共享总线的连接方式，许多设备连接到同一条PCI总线上。而">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCIe 协议概览总结">
+<meta property="og:url" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="SEANAMO">
+<meta property="og:description" content="PCIe总线是一种高速差分总线。（高速差分总线代替并行总线也是大势所趋）。与单端并行信号相比，高速差分总线可以使用更高的时钟频率，更少的信号线，完成之前需要许多单端并行总线才能达到的总线带宽。  PCIe总线继承了一些PCI总线中的核心思想，比如“桥”的概念，PCIe总线将通过一种类似的方式进行总线扩展(Switch)。PCI总线与设备之间是共享总线的连接方式，许多设备连接到同一条PCI总线上。而">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie1.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie2.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie3.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie4.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie5.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie6.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie7.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie8.png">
+<meta property="article:published_time" content="2023-04-04T11:06:00.000Z">
+<meta property="article:modified_time" content="2023-04-04T11:15:45.139Z">
+<meta property="article:author" content="kunta">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/icons8-debian-16.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/icons8-seal-circus-50.png" alt="SEANAMO" title="SEANAMO"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="SEANAMO">SEANAMO</a></h1>
+				<h2 class="blog-motto">kunta-seana 技术集结号</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:example.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2023/04/04/PCIe-协议概览总结/" title="PCIe 协议概览总结" itemprop="url">PCIe 协议概览总结</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kunta" target="_blank" itemprop="author">kunta</a>
+		
+  <p class="article-time">
+    <time datetime="2023-04-04T11:06:00.000Z" itemprop="datePublished"> Published 2023-04-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>PCIe总线是一种高速差分总线。（高速差分总线代替并行总线也是大势所趋）。与单端并行信号相比，高速差分总线可以使用更高的时钟频率，更少的信号线，完成之前需要许多单端并行总线才能达到的总线带宽。 </p>
+<p>PCIe总线继承了一些PCI总线中的核心思想，比如“桥”的概念，PCIe总线将通过一种类似的方式进行总线扩展(Switch)。PCI总线与设备之间是共享总线的连接方式，许多设备连接到同一条PCI总线上。而PCIe使用的是端到端的连接方式。一条PCIe链路的两端只能各连接一个设备，这两个设备互为数据的发送端和接收端。PCIe总线有多个层次，这种结构与网络协议栈类似。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie1.png" class="" width="1">
+
+<p>如上图所示，一对发送端和接收端的链路。图中下方是是PCIe总线的物理链路(Lane)。每个Lane中有两组差分信号（比如图中的D-与D+是一组差分信号）。可以看到，发送端的TX部件与接收端的RX部件使用一组差分信号连接，于是此链路叫做发送端的发送链路，接收端的接收链路；反之亦然。一个PCIe可以由多个Lane组成（发送设备&#x2F;接收设备有多个发送&#x2F;接收部件&#x2F;接口？）。<br><strong>PCIe总线使用的信号与PCI总线大不相同</strong>。这里一个有趣的知识点是，PCIe总线中有JTAG(Joint Test Action Group)信号。JTAG其实是一种国际标准的测试协议，主要用于芯片内部测试。当然对于我来说最常见的场景是在FPGA上使用JTAG进行在线编程。处理器也可以使用JTAG接口进行系统级的调试，设置断点、读取内部寄存器和存储器等一系列操作。因此JTAG真的可以用于“逆向工程”，分析产品的实现细节。所以，在正式产品中一般不保留JTAG接口。<br>PCIe采用了<strong>串行</strong>的连接方式，并使用数据包(Package)进行数据传输，采用这种结构有效去除了在PCI总线中存在的一些边带信号，如INTx(中断信号)和PME#等信号。<br>PCIe总线的各个层次由<strong>硬件逻辑实现</strong>。数据报文首先在设备的核心层(Device Core)产生，然后经过设备的事务层(Transaction Layer)、数据链路层(Data Link Layer)和物理层，最终发送出去。接收端发送的数据也需要经过层级最终到达核心层。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie2.png" class="" width="2">
+<p>按照顺序讲。 </p>
+<p><strong>事务层</strong>：定义了PCIe总线使用的总线事务，其中多数总线事务与PCI总线事务兼容。事务层接收来自于PCIe设备核心层的数据，并将其封装为TLP（Transaction Layer Packet）后，发向数据链路层。事务层也接收从数据链路层发来的数据报文，然后转发到设备的核心层。事务层要处理PCIe的“序”。在PCIe总线中，事务层传递报文时可以乱序，这为PCIe设备的设计制造了不小的麻烦。事务层还使用流量控制机制保证PCIe链路的使用效率。 </p>
+<p><strong>数据链路层</strong>：该层保证来自发送端事务层的报文可以可靠、完整地发送到接收端的数据链路层。来自事务层的报文在通过数据链路层时，将被添加Sequence Number前缀和CRC后缀(形成DLLP)。数据链路层使用ACK&#x2F;NAK协议保证报文的可靠传递。PCIe总线的数据还定义了多种DLLP（Data Link Layer Packet），其产生于数据链路层，终止于数据链路层。 </p>
+<p><strong>物理层</strong>：最后，物理层是PCIe总线的最底层，将PCIe设备连接在一起。PCIe总线的物理电气特性决定了PCIe链路只能使用端到端的连接方式。PCIe总线的物理层为PCIe设备间的····数据通信提供传送介质，为数据传送提供可靠的物理环境。物理层是PCIe体系结构最为重要也是最难以实现的组成部分。PCIe总线的物理层定义了LTSSM（Link Training and Status State Machine）状态机，PCIe使用该状态机管理链路状态，并进行链路训练，链路恢复和电源管理。在物理层还定义了一些专门的“序列”，有的书籍将物理层这些“序列”称为PLP（Physical Layer Packet）这些序列用于同步PCIe链路，并进行链路管理。 </p>
+<p>PCI总线中使用PCI桥进行总线扩展。在PCIe总线中，扩展组件是<strong>Switch</strong>。<br>Switch是一个特殊的设备，其有一个上游端口，和2~n个下游端口。被叫做上游端口是因为能够和PCIe的根复合体(RC, Root Complex)相连；其他的端口都是下游端口。下游端口一般与端点设备相连（EndPoint, EP）或者是连接其他的Switch。对应的概念有上游链路（与上游端口相连的PCIe链路）和下游链路。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie3.png" class="" width="3">
+
+<p>在Switch中，数据流出的端口被称为Egress端口，Ingress指的数据流入Switch使用的端口。对于 <strong>RC（Root Complex，根复合体）</strong> 也有同样的定义。PCIe的Switch还支持一种CrossLink传输方式。此方式主要是为了解决不同处理器系统之间的互连。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie4.png" class="" width="4">
+
+<p>如上图所示，此方式在物理结构上表现为一个Switch的上&#x2F;下游端口与另一个Switch的上&#x2F;下游端口直接相连，但是其实这个PCIe链路经过训练后，仍然是一个端口作为上游端口，而另一个端口作为下游端口[P109]。 </p>
+<p>接下来一部分内容是PCIe中的复位方式（初始化），以及复位信号的说明。<br>再之后的内容，是关于PCIe体系结构的组成。以下是一幅PCIe总线的体系结构示意图。关于细节的部分我这里不详述，但是可以看到，这里出现了核心组件RC的内部结构。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie5.png" class="" width="5">
+
+<p>PCIe总线中RC的定位，可以理解为PCI总线中HOST主桥的定位。PCIe总线中也没有定义RC应当如何设计，因此不同处理器对RC的结构设计不同，甚至不一定有明确的RC设计。比如在书中提到的PowerPC处理器P4080中，定义的PCIe控制器起的作用类似于RC。但是总的来说，PCIe总线的处理器有以下的通用结构。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie6.png" class="" width="6">
+
+<p>如PCI总线中的HOST主桥一样，<strong>RC也担负着存储器域和PCI域地址转换的功能</strong>。但是其功能不止于此。RC还要完成物理信号的转换（因为在处理器中的总线如FSB和外设的PCIe总线之间的电气特性并不兼容）。 </p>
+<p>下图是<strong>Switch内部的结构</strong>。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie7.png" class="" width="7">
+
+<p>如上图所示，从软件的角度来看，Switch内部是由多个虚拟PCI桥组成的。（图中的P2P Bridge，是PCI to PCI桥）。每一个Switch内的上下游端口都对应一个虚拟的PCI桥。在Switch内部，还有一条虚拟的PCI总线来连接这些虚拟的PCI桥。（这里的虚拟应当都是指软件实现）。和PCIe总线中的RC和EP一样，Swtich也需要处理PCIe总线传输过程中的QoS问题。PCIe中的不同数据报文有不同的优先级，根据优先级不同的报文获得不同的数据带宽。PCIe总线要保证优先级高的报文优先到达。在具体的PCIe通路传输中，PCIe总线采用了<strong>虚拟多通路技术(VC, Virtual Channel)<strong>，并为数据报文设定一个</strong>TC（Traffic Class）</strong>，此标签由3位组成，为报文设置8个优先级。这8类数据报文可以根据需要选择不同的VC进行传递。 </p>
+<p>在PCIe总线的每一条链路上，最多可以支持8个独立的VC，每个VC可以设置独立的缓冲，用来接收和发送数据报文。TC和VC之间紧密相连，是一对多的关系。具体地讲，就是说同一个VC上可以传输很多不同优先级（TC）的报文，但是同一个优先级的报文只能在一条指定的VC上传输。 </p>
+<p>了解了Switch中通道的问题之后，稍作思考可知，既然在同一个通道上会存在多个TC的数据报文，则必然会存在数据报文在传输产生的竞争问题。于是，在Switch中必须有对应的仲裁机制。即PCIe总线中基于的VC仲裁。 </p>
+<p>在PCIe中，有两种形式的仲裁，<strong>基于端口的仲裁</strong>和<strong>基于VC的仲裁</strong>。<br>基于端口的仲裁，当然就是对端口的使用出现了竞争情况。根据前面，对PCIe总线中端口的分类，就是说当多个Ingress端口访问同一个Egress端口时，就会出现端口竞争的情况。<br>我们对着图讲。 </p>
+<img src="/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pcie8.png" class="" width="8">
+
+<p>具体地讲，有以下三种情况。注意，上图中的EP代表EndPoint，即端点设备。<br><strong>Switch的Egress端口。</strong> 当EPA与EPB同时访问EPC、EPD或者DDR时，二者对分别通过Ingress PortA、B对Egress PortC的访问就形成了竞争，Switch内部需要通过端口仲裁决定EPA还是EPB的数据报文先通过EPC。<br><strong>RC的Egress端口。</strong> 比如当端口1、3同时对EPC进行访问，则二者的请求在RC的Egress Port2处必然要经过端口仲裁。<br><strong>RC通往主存储器的端口。</strong> 当RC中的端口1、2、3同时对DDR Controller发起了访问，那么三者的请求在RC的端口4处，必然要进行仲裁放行。 </p>
+<p>当数据报文到达端口后，先进行端口仲裁，然后才进行VC仲裁。PCIe总线规定了3种VC仲裁方式：严格优先级（Strict Priority）、时间片轮转（RR）、加权时间片轮转（WRR）。更具体地讲，端口仲裁的结果是使得数据报文获得VC的使用权；而VC仲裁进一步决定哪个VC先通过输出端口发送到物理链路。[P121-122] </p>
+<p>往后的4.3节详解了PCIe中扩展<strong>配置空间的寄存器信息</strong>。 </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/FPGA/">FPGA</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://example.com/2023/04/04/PCIe-%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/" data-title="PCIe 协议概览总结 | SEANAMO" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2023/04/04/PCI协议概览总结/"  title="PCI协议概览总结">
+ <strong>下一篇：</strong><br/> 
+ <span>PCI协议概览总结
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/FPGA/" title="FPGA">FPGA<sup>6</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/linux-系统/" title="linux 系统">linux 系统<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/系统配置/" title="系统配置">系统配置<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/test/" title="test">test<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-lang/" title="C-lang">C-lang<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.neu.edu.cn" target="_blank" title="东百带学">东百带学</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.henu.edu.cn" target="_blank" title="开封师专">开封师专</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> Kunta-Seana <br/>
+			欢迎来到我的技术世界</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2023 
+		
+		<a href="/about" target="_blank" title="kunta">kunta</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
