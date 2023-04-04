@@ -1,0 +1,517 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H9YY5KLSE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-8H9YY5KLSE');
+  </script>
+
+  <meta charset="UTF-8">
+  
+    <title>DDR接口与时序 | SEANAMO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kunta">
+    
+
+    
+    <meta name="description" content="Xilinx IP核接口总结。参考文档：《UltraScale Architecture-Based FPGAs Memory IP v1.4 LogiCORE IP Product Guide Vivado Design Suite PG150 October 22, 2021》Xilinx官方文档链接：文档链接本次内容总结不是DDR接口规范的总结。DDR的规范属于照本宣科的内容。这里为DDR">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DDR接口与时序">
+<meta property="og:url" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/index.html">
+<meta property="og:site_name" content="SEANAMO">
+<meta property="og:description" content="Xilinx IP核接口总结。参考文档：《UltraScale Architecture-Based FPGAs Memory IP v1.4 LogiCORE IP Product Guide Vivado Design Suite PG150 October 22, 2021》Xilinx官方文档链接：文档链接本次内容总结不是DDR接口规范的总结。DDR的规范属于照本宣科的内容。这里为DDR">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr1.png">
+<meta property="og:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr2.png">
+<meta property="og:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr3.png">
+<meta property="og:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr4.png">
+<meta property="og:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr5.png">
+<meta property="article:published_time" content="2023-04-04T09:05:49.000Z">
+<meta property="article:modified_time" content="2023-04-04T10:38:07.435Z">
+<meta property="article:author" content="kunta">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/icons8-debian-16.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/icons8-seal-circus-50.png" alt="SEANAMO" title="SEANAMO"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="SEANAMO">SEANAMO</a></h1>
+				<h2 class="blog-motto">kunta-seana 技术集结号</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:example.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2023/04/04/DDR接口与时序/" title="DDR接口与时序" itemprop="url">DDR接口与时序</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kunta" target="_blank" itemprop="author">kunta</a>
+		
+  <p class="article-time">
+    <time datetime="2023-04-04T09:05:49.000Z" itemprop="datePublished"> Published 2023-04-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">IP核方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">IP核内部结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DDR3%E4%B8%8EDDR4%E7%9A%84%E7%89%B9%E5%BE%81%E6%80%BB%E7%BB%93%E4%B8%8E%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">DDR3与DDR4的特征总结与区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E7%9A%84%E7%AB%AF%E5%8F%A3%E4%BF%A1%E5%8F%B7%E6%8F%8F%E8%BF%B0"><span class="toc-number">4.</span> <span class="toc-text">IP核的端口信号描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">存储器控制器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3-%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3%E5%B1%82%E5%92%8C%E5%AD%98%E5%82%A8%E5%99%A8%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.1.</span> <span class="toc-text">本地接口(用户接口层和存储器控制器之间的接口)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E9%80%BB%E8%BE%91-Control-Path-%E6%8E%A7%E5%88%B6%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.</span> <span class="toc-text">控制逻辑(Control Path, 控制路径)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%99%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.1.</span> <span class="toc-text">写路径</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AF%BB%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.2.</span> <span class="toc-text">读路径</span></a></li></ol></li></ol></li></ol>
+		
+		</div>
+		
+		<p>Xilinx IP核接口总结。<br>参考文档：<br>《UltraScale Architecture-Based FPGAs Memory IP v1.4 LogiCORE IP Product Guide Vivado Design Suite PG150 October 22, 2021》<br>Xilinx官方文档链接：<br><a target="_blank" rel="noopener" href="https://docs.xilinx.com/v/u/en-US/pg150-ultrascale-memory-ip">文档链接</a><br>本次内容总结不是DDR接口规范的总结。DDR的规范属于照本宣科的内容。这里为DDR IP核的实践学习铺平道路，在实践之前对DDR IP核的内部结构有个充分的认识。大部分内容属于在阅读IP核内容时的笔记。现在开始总结。 本次Xilinx UltraScale Architecture-Based FPGAs Memory IP v1.4 中包含DDR3 SDRAM 1.3和DDR4 SDRAM 2.2两种IP核产品。在我们项目中使用的是DDR4 SDRAM的IP核。在我所阅读的内容中，两类产品的结构是一样的。以下统称为DDR SDRAM IP核。 </p>
+<h3 id="IP核方案"><a href="#IP核方案" class="headerlink" title="IP核方案"></a>IP核方案</h3><p>对于DDR SDRAM IP核，有两套解决方案：<br>存储器控制器接口(Memory Controller)方案和物理层(physical layer)方案。 </p>
+<h3 id="IP核内部结构"><a href="#IP核内部结构" class="headerlink" title="IP核内部结构"></a>IP核内部结构</h3><p>DDR SDRAM的IP核一共是三层。</p>
+<img src="/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr1.png" class="" title="IP核内部结构">
+
+<p>与SDRAM物理介质最近的一层是<strong>物理层</strong>(Physical Layer)，对我项目来说比较有用的信息是，物理层返回校准信息，这个信息最终能够被XIlinx的debug工具捕捉到。校准完成后，物理层将原始接口(raw interface)暴露给SDRAM介质。<br>物理层上一层是控制器层，全称应该是<strong>存储器控制器</strong>(Memory Controller)。结合文档图文，该层与物理层之间的接口应该就是上述的原始接口(raw interface)。该层从用户接口层接收接收突发事务(transaction)，将发送到SDRAM的请求或者SDRAM发来的响应生成事务。结合之前看的SSD内部“事务”的概念，这个事务应该也是将请求切分或者包装为SDRAM或者用户接口约定的大小格式。此外，该层对读写事务进行优化，提高周期利用率和数据总线利用率。<br>面向用户逻辑的是，<strong>用户接口</strong>(User Interface, UI)，或者叫应用接口(application interface)。该层提供的接口很简单，和FIFO接口的风格很像。读写数据在这层会被缓存；待读取的数据会按照请求的顺序反馈给用户逻辑。用户接口层和存储器控制器层之间的接口叫做native interface，就翻译为“本地接口”吧。用户逻辑是无法访问到本地接口的。本机接口负责通过存储器控制器层接收SDRAM返回的数据，这个数据的返回顺序可能与请求顺序不一样。因此用户接口需要缓存读取的数据并将数据重新排序(按照用户逻辑所需)。 </p>
+<h3 id="DDR3与DDR4的特征总结与区别"><a href="#DDR3与DDR4的特征总结与区别" class="headerlink" title="DDR3与DDR4的特征总结与区别"></a>DDR3与DDR4的特征总结与区别</h3><p>文档定位：[Page 16-17]，对比DDR3 SDRAM，DDR4 SDRAM多了对3DS RDIMM和LRDIMM的支持。其他很多重要特征都一样，如 对8字长的突发操作的支持、存储器时钟频率与FPGA接口时钟频率为4:1、对于非AXI4的72位宽度的用户接口可选纠错码(ECC)等。<br>在不同负载测试下，DD3和DDR4的性能测试结果对比<br>文档定位[Page 20-22]，总的来说，这里对比了多种负载下，使用IP核对DDR SDRAM进行读写操作的数据总线利用率。明显地看到，连续写的效率比连续读要差，因为连续写操作中被插入了周期性的读操作；突发读写的工作负载，可以达到一个介于连续读性能和连续写性能之间的性能。理论上，突发的读事务的频率足够高，使得周期性读不影响到存储器控制器。但是由于读写总线的turnaround？，突发读写下的效率还是比纯粹的连续读操作低。 </p>
+<h3 id="IP核的端口信号描述"><a href="#IP核的端口信号描述" class="headerlink" title="IP核的端口信号描述"></a>IP核的端口信号描述</h3><p>对于一个完整的存储器控制器解决方案(Memory Controller solution)来说，IP核有三类端口，叫做“user design”。 </p>
+<ol>
+<li>与SRAM直接交互的存储器接口信号。由JEDEC定义。（物理层与SDRAM介质之间） </li>
+<li>应用接口信号。（连接用户接口层） </li>
+<li>其他保证操作正常进行的必要信号。如时钟、复位、状态信号等。高位有效的信号init_calib_complete信号表示初始化和校准完成，接口可以接收命令。<br>另一套方案是只有物理层的方案(PHY Only Solution)。</li>
+</ol>
+<h3 id="存储器控制器"><a href="#存储器控制器" class="headerlink" title="存储器控制器"></a>存储器控制器</h3><p>IP核的此部分处理来自于用户接口层的请求。<br>存储器控制器被设计以用于来自用户接口模块的读写事务以及read-modify-write事务；将这些事务以低时延高效地传输到存储介质，同时满足所有DRAM的协议和时序要求，并使用最少的FPGA资源。再次强调，DRAM中的时钟频率和FPGA的时钟频率比率是4:1。存储器控制器的结构框图如下图所示。 </p>
+<img src="/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr2.png" class="" title="IP核内部结构">
+
+<p>存储器控制器中命令路径的关键部分包括： </p>
+<ol>
+<li>Group FSMs：排队事务、检查DRAM时序、决定何时请求Precharge，Activate, CAS和这些DRAM命令。 </li>
+<li>“Safe”逻辑和仲裁单元：基于额外的DRAM时序，重新排序Group FSMs之间的事务， 同时确保所有DRAM命令请求的处理进度。</li>
+<li>Final Arbiter：最终仲裁逻辑，最终决定哪些命令被发送到物理层，并将结果反馈到先前阶段。</li>
+</ol>
+<h4 id="本地接口-用户接口层和存储器控制器之间的接口"><a href="#本地接口-用户接口层和存储器控制器之间的接口" class="headerlink" title="本地接口(用户接口层和存储器控制器之间的接口)"></a>本地接口(用户接口层和存储器控制器之间的接口)</h4><p>用户接口通过与存储器控制器相连.用户接口通过此接口向存储器控制器提供地址编码和读写数据缓存。<br>在写操作中，存储器控制器通过在本机接口上提供数据缓冲地址，在需要数据前一个周期请求数据。继而在下一个周期，用户接口层当提供该数据。因此，在本地接口中没有任何数据的缓存。<br>在读操作中，数据将在其数据有效的周期内被存储器控制器提供到本地接口。一旦读数据准备就绪，它就会和缓冲区地址一起显示在本机接口上。数据应当被用户接口层接收。<br>本地接口的逻辑中，会根据来自于UI层中的读写事务的解码地址的bank组和bank地址位，将读写事务映射到一个mcGroup实例中。<br>mcGroup是按照顺序处理I&#x2F;O事务的。因此可以防止read-after-write和write-after-write操作中的地址冲突。 </p>
+<h4 id="控制逻辑-Control-Path-控制路径"><a href="#控制逻辑-Control-Path-控制路径" class="headerlink" title="控制逻辑(Control Path, 控制路径)"></a>控制逻辑(Control Path, 控制路径)</h4><p>存储器控制器中的控制逻辑始于本地接口中的mcGroup实例。SDRAM bank组和SDRAM bank地址到mcGroup实例的映射，确保了发送到同一个完整地址的事务被映射到相同的mcGroup实例。mcGroup是按照顺序处理I&#x2F;O事务的。因此可以防止read-after-write和write-after-write操作中的地址冲突。 </p>
+<p>梳理DDR IP核中定义的读写信号逻辑与时序规范。<br>首先是命令的路径。 </p>
+<img src="/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr3.png" class="" title="用户接口命令时序">
+
+<p>如上图所示，控制DDR IP核正常工作的几个关键信号：app_en，app_rdy。<br>还有关键信号app_cmd和app_addr。<br>PG150中对以上信号的约束如下：<br>只有当app_en（User Logic产生，以下简称UL）和app_rdy（User Interface产生，以下简称UI），一条命令方才被UI接收并被写入FIFO。也就是说，app_en和app_rdy同时有效是DDR IP正常工作的前提。更为重要的是UI产生的app_rdy，一旦此信号不再有效，传输过来的命令将被忽略，而且用户逻辑必须保持上述命令、地址和autoprecharge都有效，直到app_rdy再次有效。 </p>
+<h5 id="写路径"><a href="#写路径" class="headerlink" title="写路径"></a>写路径</h5><img src="/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr4.png" class="" title="写路径">
+
+<p>上图展示了写操作中的三种情形： </p>
+<ol>
+<li>待写入数据和对应的命令同时到来； </li>
+<li>待写入数据在命令之前到来； </li>
+<li>待写入数据在命令之后到来，但是最多只能延迟两个时钟周期。<br>当app_rdy_wren（UL产生）和app_wdf_rdy（UI产生）都有效时，才能进行写操作（写数据才能被接收）。同样，如果app_wdf_rdy被取消置位，则在其重新被置位前，UL必须保持app_wdf_wren、app_wdf_end为高电平，保持有效的app_wdf_rdy的值。注意app_wdf_mask信号用于屏蔽要写入外部存储器的字节。</li>
+</ol>
+<h5 id="读路径"><a href="#读路径" class="headerlink" title="读路径"></a>读路径</h5><img src="/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/ddr5.png" class="" title="读路径">
+<p>DDR IP核的UI部分返回读取的数据。返回的数据的顺序与其数据请求时的数据一致（更具体地讲，是与地址&#x2F;控制总线上产生的请求的顺序一致。）只有当app_rd_data_valid（UI输出）信号置位时，数据方才有效。app_rd_data_end（UI输出）信号指示每个读命令突发操作的结果，用户逻辑部分不适用此信号。<br>还有，关于Xilinx DDR IP的时钟设计，一定要注意。从用户逻辑输入的时钟当然是FPGA开发板的晶振时钟，这个无法配置。DDR IP核中的UI的MMCM负责根据输入的时钟产生DDR IP核使用的时钟频率信号ui_clk，这个时钟频率与DDR SDRAM内部的时钟频率需要满足一定的比率，其值可以在Vivado中IP核配置中修改（根据产品的不同也有可能直接就被锁定比率了），一般是1:2或者4:1。<br>参考内容见PG150 [P127-ui_clk, P82-MMCM, P25-Memory Controller, P16, P17] </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/FPGA/">FPGA</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://example.com/2023/04/04/DDR%E6%8E%A5%E5%8F%A3%E4%B8%8E%E6%97%B6%E5%BA%8F/" data-title="DDR接口与时序 | SEANAMO" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2023/04/04/DMA协议内容总结/"  title="DMA协议内容总结">
+ <strong>下一篇：</strong><br/> 
+ <span>DMA协议内容总结
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E6%96%B9%E6%A1%88"><span class="toc-number">1.</span> <span class="toc-text">IP核方案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">IP核内部结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DDR3%E4%B8%8EDDR4%E7%9A%84%E7%89%B9%E5%BE%81%E6%80%BB%E7%BB%93%E4%B8%8E%E5%8C%BA%E5%88%AB"><span class="toc-number">3.</span> <span class="toc-text">DDR3与DDR4的特征总结与区别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IP%E6%A0%B8%E7%9A%84%E7%AB%AF%E5%8F%A3%E4%BF%A1%E5%8F%B7%E6%8F%8F%E8%BF%B0"><span class="toc-number">4.</span> <span class="toc-text">IP核的端口信号描述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%99%A8%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="toc-number">5.</span> <span class="toc-text">存储器控制器</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0%E6%8E%A5%E5%8F%A3-%E7%94%A8%E6%88%B7%E6%8E%A5%E5%8F%A3%E5%B1%82%E5%92%8C%E5%AD%98%E5%82%A8%E5%99%A8%E6%8E%A7%E5%88%B6%E5%99%A8%E4%B9%8B%E9%97%B4%E7%9A%84%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.1.</span> <span class="toc-text">本地接口(用户接口层和存储器控制器之间的接口)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A7%E5%88%B6%E9%80%BB%E8%BE%91-Control-Path-%E6%8E%A7%E5%88%B6%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.</span> <span class="toc-text">控制逻辑(Control Path, 控制路径)</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%99%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.1.</span> <span class="toc-text">写路径</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%AF%BB%E8%B7%AF%E5%BE%84"><span class="toc-number">5.2.2.</span> <span class="toc-text">读路径</span></a></li></ol></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/FPGA/" title="FPGA">FPGA<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/linux-系统/" title="linux 系统">linux 系统<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/系统配置/" title="系统配置">系统配置<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/test/" title="test">test<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-lang/" title="C-lang">C-lang<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.neu.edu.cn" target="_blank" title="东百带学">东百带学</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.henu.edu.cn" target="_blank" title="开封师专">开封师专</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> Kunta-Seana <br/>
+			欢迎来到我的技术世界</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2023 
+		
+		<a href="/about" target="_blank" title="kunta">kunta</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
