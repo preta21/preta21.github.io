@@ -37,7 +37,7 @@
 <meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-6.png">
 <meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-7.png">
 <meta property="article:published_time" content="2023-04-04T10:41:27.000Z">
-<meta property="article:modified_time" content="2023-04-04T11:05:36.827Z">
+<meta property="article:modified_time" content="2023-04-04T11:19:49.661Z">
 <meta property="article:author" content="kunta">
 <meta property="article:tag" content="FPGA">
 <meta name="twitter:card" content="summary">
@@ -128,16 +128,16 @@
 <blockquote>
 <p>PCI总线是一条并行总线。<br>PCI总线是一条共享总线，也就是说同一条总线上所有的PCI设备共享总线带宽(显然将极大地影响总线的利用率)。<br>PCI总线是一条同步总线。所有设备都是用统一的CLK信号同步数据传输。 </p>
 </blockquote>
-<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-1.png" class="" width="1">
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-1.png" class="" title="PCI拓扑结构">
 <p>如上是PCI总线的一个结构图。上图图示中，HOST主桥即指Host-to-PCI主桥，起到连接处理器和PCI总线的作用。图中的PCI桥指的是PCI-to-PCI桥，用于PCI总线的扩展。这里我给出一个简图，进一步说明HOST主桥、PCI桥、PCI总线和PCI设备之间的关系。 </p>
-<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-2.png" class="" width="2">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-2.png" class="" title="PCI总线树">
 
 <p>PCI总线从HOST主桥出发，通过PCI桥的扩展，可以延伸出多条总线，连接多个设备，最终形成一个以HOST主桥为根节点的PCI总线树。HOST主桥会引出第一条PCI总线(PCI总线0)，总线下能够挂载诸如声卡、网卡、SSD等外围设备，以及PCI桥。PCI桥将再推出一条新的PCI总线，从而挂载一颗PCI总线子树。因此，PCI桥的上下两端都连接着PCI总线。上端，距离处理器较近的总线被称为上游总线(Primary Bus)，对应的下端的总线叫下游总线(Secondary Bus)。通过PCI桥进行扩展有限制：一颗PCI总线树上最多挂载包括PCI桥在内的256个PCI设备。<br>注意，HOST主桥是一个特殊的PCI设备。在PCI规范中并没有定义如何设计HOST主桥。但是HOST主桥的作用至关重要，其可以获取PCI总线的控制权访问PCI设备，也可以被PCI设备访问。 </p>
 <h3 id="地址域"><a href="#地址域" class="headerlink" title="地址域"></a>地址域</h3><p>在PCI总线体系结构下，处理器地址空间和PCI设备的地址空间是相隔离的。在本书中，处理器能直接访问的的地址空间，也就是主存储器的物理地址空间，被称为存储器域；PCI设备的地址空间被称为PCI总线域。HOST主桥正起到这个隔离的作用。处理器需要通过主桥访问PCI设备。在HOST主桥的设计中，有很多缓冲，使得处理器总线和PCI总线工作在各自的频率下互不干扰。因此，处理器和PCI设备之间的访问，需要经过HOST主桥的地址转换。<br>本书编写时，x86的处理器中存储器域与PCI总线域没有严格划分，但是程序员必须知道二者之不同。<br>当一个PCI设备的配置空间被初始化后，其在当前的PCI总线树上将拥有一个独立的PCI总线地址空间，这个空间由BAR (Base Address Register) 寄存器描述。<br>根据以上描述，可以知道HOST主桥、PCI总线域和PCI总线树是一一对应关系。 </p>
 <h3 id="重要信号"><a href="#重要信号" class="headerlink" title="重要信号"></a>重要信号</h3><p>书中的[P9~13]介绍了重要的PCI总线信号。部分信号的说明详见下下节“PCI总线事务时序”。 </p>
 <h3 id="总线事务"><a href="#总线事务" class="headerlink" title="总线事务"></a>总线事务</h3><p>从[P9]的表1-2得知，PCI总线协议中定义了多种总线事务。</p>
-<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-3.png" class="" width="3">
-<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-4.png" class="" width="4">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-3.png" class="" title="事务1">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-4.png" class="" title="事务2">
 
 <p>其中，关于读写事务，有三类：<strong>I&#x2F;O读写事务</strong>、<strong>存储器读写事务</strong>以及<strong>配置读写事务</strong>。这里主要介绍存储器读写事务的过程，来集中整理前述的零散知识。<br>对于I&#x2F;O读写事务、存储器读写事务这样的数据传输，处理器与PCI设备之间相互访问的方式是地址译码方式，也就是通过HOST主桥转换存储器域和PCI总线域的地址来完成两端访问；对于配置读写事务这样的配置信息传输，一般是处理器通过ID译码的方式来访问PCI设备。使用的ID信号比如Bus Number、Device Number、Function Number、Register Number等等。<br>对于PCI总线中的存储器读写总线事务，有以下几种： </p>
 <ol>
@@ -166,7 +166,7 @@
 </ol>
 <h3 id="读写事务工作过程"><a href="#读写事务工作过程" class="headerlink" title="读写事务工作过程"></a>读写事务工作过程</h3><p>PCI总线规范中规定了两类数据传送方式，<strong>Posted</strong>和<strong>Non-Posted</strong>(下文简称为P方式和NP方式)，对应的有Posted总线事务和Non-Posted总线事务(<strong>下文简称P事务和NP事务</strong>)。<br>P事务 是一种自顶向下逐级释放资源的模式。当上游总线的数据传输事务到达下一级的PCI桥后，由该PCI桥接管事务，将事务转发到下游总线，同时结束上游总线的事务。本质上，是该PCI桥重新开辟了一个事务转发给下游总线，上游总线就不用管了。<br>NP事务，则在原则上需要等待数据最终传送到目标设备，返回响应信息之后，才能结束当前的总线事务。<br>PCI规范中规定，只有存储器写请求可以使用P事务，而存储器读请求、I&#x2F;O读写请求、配置读写请求只能采用NP事务。采用NP方式的数据传输将更可靠，但是数据传输中对PCI总线资源的占用也十分严重。在NP方式下，总线资源的释放，也是在目标设备的响应信息回送过程中，进行的逐级释放，因此很容易引起PCI总线的拥塞。对于这一特点，PCI桥对NP事务有优化策略，即使用<strong>Delayed总线事务</strong>来处理NP事务。PCI总线的Delay总线事务由Delay读写请求和Delay读写完成总线事务组成。主要思想是在NP事务的过程中引入Retry周期。Retry周期指的是PCI桥重新发起相同的总线周期。当HOST主桥启动NP方式的PCI读写总线事务后，期后的第一个PCI桥首先使用<strong>Retry周期</strong>，使HOST主桥择时重新发起相同的总线周期，此时该PCI桥上游的PCI总线将被释放。当该PCI桥继续转发读写请求时使用的便是Delayed总线请求。具体的一个示例过程见书中[P20]。 </p>
 <h4 id="HOST处理器访问PCI设备"><a href="#HOST处理器访问PCI设备" class="headerlink" title="HOST处理器访问PCI设备"></a>HOST处理器访问PCI设备</h4><p>对于I&#x2F;O读写事务和存储器读写事务，要搞清楚<strong>I&#x2F;O地址空间</strong>和<strong>存储器地址空间</strong>的区别。PCI总线域中，有PCI设备的存储器地址空间和I&#x2F;O地址空间；在存储器域中，有存储器的存储器地址空间和I&#x2F;O地址空间。但是，是否具有独立的I&#x2F;O地址空间，因处理器相异。在x86处理器中，是有独立的I&#x2F;O地址空间的，且存储器域的I&#x2F;O地址空间和PCI总线域的I&#x2F;O地址空间相同。但是，仍然要知道区分这两个概念。<br>处理器对于PCI设备发起的I&#x2F;O读写请求和存储器读写请求的处理过程是类似的，处理器将其可以访问的存储器域的I&#x2F;O地址或者存储器地址通过HOST主桥转换为PCI总线域的I&#x2F;O地址或者存储器地址。书中的[P16下方→P17]详细介绍了处理器访问PCI设备的存储器写事务的处理过程；[P17下方→P18]详细介绍了处理器使用纯粹NP方式访问PCI设备的存储器读事务的处理过程，这个过程清楚地展示了NP方式的一个特点，就是PCI总线在向上传递目标设备的响应时，后方不再使用的总线事务才会关闭(结束)。对于I&#x2F;O写事务的过程，则是留给读者考虑(I&#x2F;O读事务和存储读事务的处理过程类似)。 </p>
-<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-6.png" class="" width="6">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-6.png" class="" title="原图">
 
 <p>这里再次给出了图1-1，接下来尝试探讨处理器向PCI设备发起I&#x2F;O写事务的过程。<br>以处理器向PCI设备11发起I&#x2F;O读写操作为例。这里假设事务过程使用的是纯粹的NP方式(没有使用Delayed传送方式)。I&#x2F;O写总线事务的处理过程如下： </p>
 <ol>
@@ -182,7 +182,7 @@
 <p>PCI设备处理可以向主存储器发起DMA操作，还可以向其他的PCI设备发起读写操作，不过不常见（目前我的理解是，这中读写事务也算一种存储器读写事务，同样的写事务将使用P方式，读事务将使用NP方式）。 </p>
 <p>还是参考上面的图1-1，书中介绍了PCI设备11向主存储器发起DMA读写(PCI存储器读写事务)的详细过程[P18-19]，以及PCI设备11将数据写入PCI设备01的过程[P19下方]，接下来尝试探讨PCI设备11从PCI设备01读取数据的过程。 </p>
 <p>为方便说明，还是将图1-1放在这里。 </p>
-<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-7.png" class="" width="7">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-7.png" class="" title="原图">
 
 <ol>
 <li>PCI设备11将PCI读总线事务发向PCI总线x1上，PCI桥x1和PCI设备12同时监听此总线事务。 </li>
