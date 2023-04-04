@@ -1,0 +1,549 @@
+
+ <!DOCTYPE HTML>
+<html lang="en">
+<head>
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8H9YY5KLSE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-8H9YY5KLSE');
+  </script>
+
+  <meta charset="UTF-8">
+  
+    <title>PCI协议概览总结 | SEANAMO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="kunta">
+    
+
+    
+    <meta name="description" content="PCI协议是PCIe协议的基础。想学习PCIe协议必须先读懂PCI协议。这里很多内容我没有细究，但是就阅读的过程来看，PCI协议的内容确实比较传统，但是也不难懂。我阅读的书是机械工业出版社的《PCI Express体系结构导读》，王齐编著。想讲好协议的内容确实不容易，我读过一部分NVMe协议的内容，我知道协议本身读起来其实很枯燥。这里王齐作者不光是讲了PCI协议的知识，更多的是附带讲解了很多处理器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PCI协议概览总结">
+<meta property="og:url" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="SEANAMO">
+<meta property="og:description" content="PCI协议是PCIe协议的基础。想学习PCIe协议必须先读懂PCI协议。这里很多内容我没有细究，但是就阅读的过程来看，PCI协议的内容确实比较传统，但是也不难懂。我阅读的书是机械工业出版社的《PCI Express体系结构导读》，王齐编著。想讲好协议的内容确实不容易，我读过一部分NVMe协议的内容，我知道协议本身读起来其实很枯燥。这里王齐作者不光是讲了PCI协议的知识，更多的是附带讲解了很多处理器">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-1.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-2.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-3.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-4.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-5.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-6.png">
+<meta property="og:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-7.png">
+<meta property="article:published_time" content="2023-04-04T10:41:27.000Z">
+<meta property="article:modified_time" content="2023-04-04T11:05:36.827Z">
+<meta property="article:author" content="kunta">
+<meta property="article:tag" content="FPGA">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-1.png">
+
+    
+    <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/icons8-debian-16.png">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/icons8-seal-circus-50.png" alt="SEANAMO" title="SEANAMO"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="SEANAMO">SEANAMO</a></h1>
+				<h2 class="blog-motto">kunta-seana 技术集结号</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:example.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2023/04/04/PCI协议概览总结/" title="PCI协议概览总结" itemprop="url">PCI协议概览总结</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="kunta" target="_blank" itemprop="author">kunta</a>
+		
+  <p class="article-time">
+    <time datetime="2023-04-04T10:41:27.000Z" itemprop="datePublished"> Published 2023-04-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E5%9F%9F"><span class="toc-number">3.</span> <span class="toc-text">地址域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E4%BF%A1%E5%8F%B7"><span class="toc-number">4.</span> <span class="toc-text">重要信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E4%BA%8B%E5%8A%A1"><span class="toc-number">5.</span> <span class="toc-text">总线事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PCI%E6%80%BB%E7%BA%BF%E4%BA%8B%E5%8A%A1%E6%97%B6%E5%BA%8F"><span class="toc-number">6.</span> <span class="toc-text">PCI总线事务时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E4%BA%8B%E5%8A%A1%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-number">7.</span> <span class="toc-text">读写事务工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#HOST%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BF%E9%97%AEPCI%E8%AE%BE%E5%A4%87"><span class="toc-number">7.1.</span> <span class="toc-text">HOST处理器访问PCI设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PCI%E8%AE%BE%E5%A4%87%E8%AF%BB%E5%86%99%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8"><span class="toc-number">7.2.</span> <span class="toc-text">PCI设备读写主存储器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol>
+		
+		</div>
+		
+		<p>PCI协议是PCIe协议的基础。想学习PCIe协议必须先读懂PCI协议。<br>这里很多内容我没有细究，但是就阅读的过程来看，PCI协议的内容确实比较传统，但是也不难懂。<br>我阅读的书是机械工业出版社的《PCI Express体系结构导读》，王齐编著。<br>想讲好协议的内容确实不容易，我读过一部分NVMe协议的内容，我知道协议本身读起来其实很枯燥。这里王齐作者不光是讲了PCI协议的知识，更多的是附带讲解了很多处理器系统的知识。不过总体来说其语言还是比较啰嗦的。至少在第1章，一个重要特征是图示很少，围绕一两个图示说明的内容能占到很大的篇幅。学到东西就行吧。<br>本书分为两部分，的一部分是PCI总线的基本知识，也足够我进行基本的了解了。PCI的知识我先看了第一章这么多，接下来直接去看PCIe的内容，如有需要再回头来看PCI的内容。 </p>
+<h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>PCI总线是处理器系统的局部总线，作用是连接外部设备，而不是作为处理器系统总线连接Cache和主存。PCI总线可说是系统总线的延伸，其设计考虑了许多与处理器相关的内容，比如Cache共享一致性(Cache Coherent)和数据完整性(Data Consistency)。 </p>
+<blockquote>
+<p>PCI总线是一条并行总线。<br>PCI总线是一条共享总线，也就是说同一条总线上所有的PCI设备共享总线带宽(显然将极大地影响总线的利用率)。<br>PCI总线是一条同步总线。所有设备都是用统一的CLK信号同步数据传输。 </p>
+</blockquote>
+<h3 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h3><img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-1.png" class="" width="1">
+<p>如上是PCI总线的一个结构图。上图图示中，HOST主桥即指Host-to-PCI主桥，起到连接处理器和PCI总线的作用。图中的PCI桥指的是PCI-to-PCI桥，用于PCI总线的扩展。这里我给出一个简图，进一步说明HOST主桥、PCI桥、PCI总线和PCI设备之间的关系。 </p>
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-2.png" class="" width="2">
+
+<p>PCI总线从HOST主桥出发，通过PCI桥的扩展，可以延伸出多条总线，连接多个设备，最终形成一个以HOST主桥为根节点的PCI总线树。HOST主桥会引出第一条PCI总线(PCI总线0)，总线下能够挂载诸如声卡、网卡、SSD等外围设备，以及PCI桥。PCI桥将再推出一条新的PCI总线，从而挂载一颗PCI总线子树。因此，PCI桥的上下两端都连接着PCI总线。上端，距离处理器较近的总线被称为上游总线(Primary Bus)，对应的下端的总线叫下游总线(Secondary Bus)。通过PCI桥进行扩展有限制：一颗PCI总线树上最多挂载包括PCI桥在内的256个PCI设备。<br>注意，HOST主桥是一个特殊的PCI设备。在PCI规范中并没有定义如何设计HOST主桥。但是HOST主桥的作用至关重要，其可以获取PCI总线的控制权访问PCI设备，也可以被PCI设备访问。 </p>
+<h3 id="地址域"><a href="#地址域" class="headerlink" title="地址域"></a>地址域</h3><p>在PCI总线体系结构下，处理器地址空间和PCI设备的地址空间是相隔离的。在本书中，处理器能直接访问的的地址空间，也就是主存储器的物理地址空间，被称为存储器域；PCI设备的地址空间被称为PCI总线域。HOST主桥正起到这个隔离的作用。处理器需要通过主桥访问PCI设备。在HOST主桥的设计中，有很多缓冲，使得处理器总线和PCI总线工作在各自的频率下互不干扰。因此，处理器和PCI设备之间的访问，需要经过HOST主桥的地址转换。<br>本书编写时，x86的处理器中存储器域与PCI总线域没有严格划分，但是程序员必须知道二者之不同。<br>当一个PCI设备的配置空间被初始化后，其在当前的PCI总线树上将拥有一个独立的PCI总线地址空间，这个空间由BAR (Base Address Register) 寄存器描述。<br>根据以上描述，可以知道HOST主桥、PCI总线域和PCI总线树是一一对应关系。 </p>
+<h3 id="重要信号"><a href="#重要信号" class="headerlink" title="重要信号"></a>重要信号</h3><p>书中的[P9~13]介绍了重要的PCI总线信号。部分信号的说明详见下下节“PCI总线事务时序”。 </p>
+<h3 id="总线事务"><a href="#总线事务" class="headerlink" title="总线事务"></a>总线事务</h3><p>从[P9]的表1-2得知，PCI总线协议中定义了多种总线事务。</p>
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-3.png" class="" width="3">
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-4.png" class="" width="4">
+
+<p>其中，关于读写事务，有三类：<strong>I&#x2F;O读写事务</strong>、<strong>存储器读写事务</strong>以及<strong>配置读写事务</strong>。这里主要介绍存储器读写事务的过程，来集中整理前述的零散知识。<br>对于I&#x2F;O读写事务、存储器读写事务这样的数据传输，处理器与PCI设备之间相互访问的方式是地址译码方式，也就是通过HOST主桥转换存储器域和PCI总线域的地址来完成两端访问；对于配置读写事务这样的配置信息传输，一般是处理器通过ID译码的方式来访问PCI设备。使用的ID信号比如Bus Number、Device Number、Function Number、Register Number等等。<br>对于PCI总线中的存储器读写总线事务，有以下几种： </p>
+<ol>
+<li>HOST处理器对PCI设备的BAR空间进行数据读写，BAR空间可以使用存储器或者I&#x2F;O译码方式，HOST处理器使用PCI总线的存储器读写总线事务和I&#x2F;O读写总线事务访问PCI设备的BAR空间。 </li>
+<li>PCI设备之间的数据传递，一个PCI设备访问另一个PCI设备的BAR空间，比较少见； </li>
+<li>PCI设备对主存储器进行数据读写，也就是DMA操作。PCI规范中提供了一些中断信号INTX#以及MSI机制提交中断请求(DMA操作接收将产生中断)。</li>
+</ol>
+<h3 id="PCI总线事务时序"><a href="#PCI总线事务时序" class="headerlink" title="PCI总线事务时序"></a>PCI总线事务时序</h3><img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-5.png" class="" title="PCI总线事的时序">
+<p>结合PCI有关的信号功能，来说明PCI规范中，PCI设备使用总线的时序。<br>以下简述图中信号的作用。注意，是从申请PCI总线使用权的PCI设备的角度去描述的。下文中的PCI主设备指的是申请使用PCI总线的设备；目标设备指的是读写事务最终作用到的设备。信号IRDY#(In Ready)中的”In”和信号TRDY#(Transport Ready)中的”Transport”都是对于PCI主设备而言的。 </p>
+<ol>
+<li><p>FRAME#<br>上图中，<code>FRAME#</code>信号表示一个PCI事务的开始与结束，低位有效。PCI设备(包括HOST主桥)只有通过仲裁获得当前PCI总线的使用权之后，才能驱动该信号。 </p>
+</li>
+<li><p>AD[31:0]<br><code>AD[31:0]</code>，则是PCI总线复用地址信号与数据信号。具体工作过程是，PCI总线在启动后的第一个周期传送地址，这个地址是PCI总线域的存储器地址或者I&#x2F;O地址；而在下一个时钟周期传送数据。相应的周期被称为地址周期或者数据周期。PCI总线支持突发传送，即在一个地址周期之后，可以紧跟多个数据周期。 </p>
+</li>
+<li><p>C&#x2F;BE[3:0]#<br><code>C/BE[3:0]#</code>信号(Command&#x2F;Byte Enable)，是PCI总线复用的命令信号与字节选通信号。在地址周期中，该信号表示PCI总线的命令，其定义的各项总线事务见“总线事务”一节中的表格；在数据周期中，该信号表示字节选通。其中C&#x2F;BE3#、C&#x2F;BE2#、C&#x2F;BE1#、C&#x2F;BE0#与数据字节的3、2、1、0对应，使用这组信号可以对PCI设备进行单个、字、双字的访问。 </p>
+</li>
+<li><p>IRDY# 和 TRDY#<br><code>IRDY#</code>和<code>TRDY#</code>都是低位有效的信号。<br><code>IRDY#</code>由PCI主设备驱动(包括HOST主桥)，有效时信号表示PCI主设备的数据准备完毕。若是读事务，则表示PCI主设备已准备好接收缓冲，目标设备可以将数据发送到<code>AD[31:0]</code>上；若为写事务，则表示待写入数据已经在<code>AD[31:0]</code>上有效。<br><code>TRDY#</code>由目标设备驱动，在读事务中，表示PCI主设备需要的数据已经在<code>AD[31:0]</code>上有效；在写事务中，表示目标设备已经准备好接收缓冲。<br>PCI总线使用<code>IRDY#</code>和<code>TRDY#</code>进行传送控制。结合以上内容，也就是说，在读操作中，PCI主设备驱动<code>IRDY#</code>拉低，目标设备驱动<code>TRDY#</code>拉低，方能传输数据；在写操作中，PCI主设备驱动<code>TRDY#</code>拉低，目标设备驱动<code>IRDY#</code>拉低，方能传输数据。<br><code>DEVSEL#</code> (Device Selection) 信号由目标设备驱动，表示目标设备已经完成了地址译码(告知PCI主设备，其访问对象当前在PCI总线上)，但是不表示目标设备可以与主设备进行数据交换。而TRDY#信号表示数据有效，PCI主设备可以向目标设备写入或者从目标设备读出数据。</p>
+</li>
+</ol>
+<p>简介主要信号的作用后，现简述PCI总线事务的时序过程。学习协议的枯燥过程中，一个重要的事情是了解该协议的<strong>事务时序</strong>，知道主要信号的工作方式；再者就是熟悉读写操作的过程，这也是针对协议编程所当具有的基本知识。<br>首先，PCI主设备需要发送<code>REQ#</code>信号，通过总线仲裁获得总线使用权(<code>GNT#</code>信号有效)，使用以下步骤完成一个完整PCI总线事务，对目标设备进行存储器或者I&#x2F;O地址空间的读写访问。结合上图<em>“<strong>PCI总线事的时序</strong>”</em>。 </p>
+<ol>
+<li>PCI主设备获得总线使用权之后，将在CLK1的上升沿置FRAME#信号有效，启动PCI总线事务。当PCI总线事务结束后，FRAME#信号将被置为无效。 </li>
+<li>PCI总线的第一个时钟周期是地址周期，此时PCI主设备将访问的目的地址和总线命令分别驱动到AD[31:0]和C&#x2F;BE#信号上。 </li>
+<li>当IRDY#、TRDY#和DEVSEL#都有效后，总线事务将使用数据周期进行数据传递；当IRDY#和TRDY#没有同时有效，PCI总线不能进行数据传递。PCI总线使用这两个信号进行传送控制。 </li>
+<li>PCI总线支持突发周期(只有存储器读写事务支持)，也就是说在地址周期之后可以有多个数据周期。</li>
+</ol>
+<h3 id="读写事务工作过程"><a href="#读写事务工作过程" class="headerlink" title="读写事务工作过程"></a>读写事务工作过程</h3><p>PCI总线规范中规定了两类数据传送方式，<strong>Posted</strong>和<strong>Non-Posted</strong>(下文简称为P方式和NP方式)，对应的有Posted总线事务和Non-Posted总线事务(<strong>下文简称P事务和NP事务</strong>)。<br>P事务 是一种自顶向下逐级释放资源的模式。当上游总线的数据传输事务到达下一级的PCI桥后，由该PCI桥接管事务，将事务转发到下游总线，同时结束上游总线的事务。本质上，是该PCI桥重新开辟了一个事务转发给下游总线，上游总线就不用管了。<br>NP事务，则在原则上需要等待数据最终传送到目标设备，返回响应信息之后，才能结束当前的总线事务。<br>PCI规范中规定，只有存储器写请求可以使用P事务，而存储器读请求、I&#x2F;O读写请求、配置读写请求只能采用NP事务。采用NP方式的数据传输将更可靠，但是数据传输中对PCI总线资源的占用也十分严重。在NP方式下，总线资源的释放，也是在目标设备的响应信息回送过程中，进行的逐级释放，因此很容易引起PCI总线的拥塞。对于这一特点，PCI桥对NP事务有优化策略，即使用<strong>Delayed总线事务</strong>来处理NP事务。PCI总线的Delay总线事务由Delay读写请求和Delay读写完成总线事务组成。主要思想是在NP事务的过程中引入Retry周期。Retry周期指的是PCI桥重新发起相同的总线周期。当HOST主桥启动NP方式的PCI读写总线事务后，期后的第一个PCI桥首先使用<strong>Retry周期</strong>，使HOST主桥择时重新发起相同的总线周期，此时该PCI桥上游的PCI总线将被释放。当该PCI桥继续转发读写请求时使用的便是Delayed总线请求。具体的一个示例过程见书中[P20]。 </p>
+<h4 id="HOST处理器访问PCI设备"><a href="#HOST处理器访问PCI设备" class="headerlink" title="HOST处理器访问PCI设备"></a>HOST处理器访问PCI设备</h4><p>对于I&#x2F;O读写事务和存储器读写事务，要搞清楚<strong>I&#x2F;O地址空间</strong>和<strong>存储器地址空间</strong>的区别。PCI总线域中，有PCI设备的存储器地址空间和I&#x2F;O地址空间；在存储器域中，有存储器的存储器地址空间和I&#x2F;O地址空间。但是，是否具有独立的I&#x2F;O地址空间，因处理器相异。在x86处理器中，是有独立的I&#x2F;O地址空间的，且存储器域的I&#x2F;O地址空间和PCI总线域的I&#x2F;O地址空间相同。但是，仍然要知道区分这两个概念。<br>处理器对于PCI设备发起的I&#x2F;O读写请求和存储器读写请求的处理过程是类似的，处理器将其可以访问的存储器域的I&#x2F;O地址或者存储器地址通过HOST主桥转换为PCI总线域的I&#x2F;O地址或者存储器地址。书中的[P16下方→P17]详细介绍了处理器访问PCI设备的存储器写事务的处理过程；[P17下方→P18]详细介绍了处理器使用纯粹NP方式访问PCI设备的存储器读事务的处理过程，这个过程清楚地展示了NP方式的一个特点，就是PCI总线在向上传递目标设备的响应时，后方不再使用的总线事务才会关闭(结束)。对于I&#x2F;O写事务的过程，则是留给读者考虑(I&#x2F;O读事务和存储读事务的处理过程类似)。 </p>
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-6.png" class="" width="6">
+
+<p>这里再次给出了图1-1，接下来尝试探讨处理器向PCI设备发起I&#x2F;O写事务的过程。<br>以处理器向PCI设备11发起I&#x2F;O读写操作为例。这里假设事务过程使用的是纯粹的NP方式(没有使用Delayed传送方式)。I&#x2F;O写总线事务的处理过程如下： </p>
+<ol>
+<li>首先处理器将要传递的数据放入通用寄存器中，然后向PCI设备映射到存储器域的地址进行I&#x2F;O写操作。对于有独立I&#x2F;O地址空间的处理器(如x86)，在事务开始前，x86处理器会将PCI设备使用的I&#x2F;O地址映射到存储器域的I&#x2F;O地址空间中，之后处理器可以通过IN、OUT等指令对存储器域的I&#x2F;O地址进行访问，然后通过HOST主桥将PCI存储器域的I&#x2F;O地址转换为PCI总线域的I&#x2F;O地址；对于没有独立I&#x2F;O地址的处理器，如PowerPC，在HOST主桥初始化的时候，将PCI设备使用的I&#x2F;O地址空间映射为处理器的存储器地址空间，在请求到来时，HOST主桥再进行地址的转换。 </li>
+<li>HOST主桥x接收来自处理器的I&#x2F;O写请求（在HOST主桥x和y应该是经历过一个地址范围的判断），HOST主桥x进行存储器地址到PCI总线域的PCI总线地址的转换，然后向PCI总线x0发起I&#x2F;O写总线事务； </li>
+<li>PCI总线上的所有设备都将监听这个事务，最后PCI桥x1接收这个事务，然后该桥向PCI总线x1发起新的PCI总线I&#x2F;O写请求。 </li>
+<li>PCI总线x1上所有的设备都将监听此事务，最后PCI设备11接收此事务，通过设备的控制器接口将事务中的数据写入到指定地址，并将这个写请求总线事务转换为I&#x2F;O写完成总线事务(回送响应，回应)。“回应”向上传递。 </li>
+<li>“回应”上传到PCI桥x1时，结束PCI总线x1上的PCI总线事务； </li>
+<li>“回应”通过PCI总线x0继续上传到HOST主桥x时，结束PCI总线x0上的PCI总线事务。 </li>
+<li>HOST主桥x将“回应”传递给处理器，最终结束处理器的I&#x2F;O写操作。</li>
+</ol>
+<h4 id="PCI设备读写主存储器"><a href="#PCI设备读写主存储器" class="headerlink" title="PCI设备读写主存储器"></a>PCI设备读写主存储器</h4><p>PCI读写主存储器是DMA过程。在PCI设备的DMA过程中，使用的地址也是PCI总线域的地址，因此当DMA请求到达HOST主桥时候，也需要主桥将地址转换为存储器域的地址。书中[P18下方→P19]的内容详细介绍了PCI设备向主存储器发起DMA读写的过程。根据表1-2 “PCI总线事务”中的说明，PCI总线事务中的Memory Read&#x2F;Write（存储器读&#x2F;写）可以是处理器向PCI设备发起的，也可以是PCI设备向处理器发起的。因此，这里的DMA读写操作对应的其实是一种PCI设备对处理器发起的存储器读写总线事务。（I&#x2F;O读写事务只能是处理器向PCI设备发起的？） </p>
+<p>PCI设备处理可以向主存储器发起DMA操作，还可以向其他的PCI设备发起读写操作，不过不常见（目前我的理解是，这中读写事务也算一种存储器读写事务，同样的写事务将使用P方式，读事务将使用NP方式）。 </p>
+<p>还是参考上面的图1-1，书中介绍了PCI设备11向主存储器发起DMA读写(PCI存储器读写事务)的详细过程[P18-19]，以及PCI设备11将数据写入PCI设备01的过程[P19下方]，接下来尝试探讨PCI设备11从PCI设备01读取数据的过程。 </p>
+<p>为方便说明，还是将图1-1放在这里。 </p>
+<img src="/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/pci-7.png" class="" width="7">
+
+<ol>
+<li>PCI设备11将PCI读总线事务发向PCI总线x1上，PCI桥x1和PCI设备12同时监听此总线事务。 </li>
+<li>PCI桥x1将接收这个总线事务，并将此PCI读总线事务上推到PCI总线x0。 </li>
+<li>PCI总线x0上的所有设备将监听此PCI读总线事务，最后由PCI设备01接收这个数据请求，并将所需数据通过PCI总线x0传输到PCI桥x1，此时结束PCI总线x0上的读请求总线事务。 </li>
+<li>PCI桥x1将收到的数据通过PCI总线x1传输给PCI设备11，此时结束PCI总线x1上的总线事务。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>好的，PCI总线的知识介绍，告一段落。我把《PCI Express体系结构导读》中第一章关于PCI协议的知识基本都覆盖到了。这个总结的过程对知识有很好的巩固作用，但是效率也低，之后我不会再做这么详细的总结了，而打算采取更为抽象的脑图模式，或者是边看便总结。不过这个付出是值得的，因为PCI协议的知识作为PCIe协议的重要基础，学得再怎么扎实都不过分。 </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/FPGA/">FPGA</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://example.com/2023/04/04/PCI%E5%8D%8F%E8%AE%AE%E6%A6%82%E8%A7%88%E6%80%BB%E7%BB%93/" data-title="PCI协议概览总结 | SEANAMO" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2023/04/04/DDR接口与时序/"  title="DDR接口与时序">
+ <strong>下一篇：</strong><br/> 
+ <span>DDR接口与时序
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89"><span class="toc-number">1.</span> <span class="toc-text">定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84"><span class="toc-number">2.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E5%9F%9F"><span class="toc-number">3.</span> <span class="toc-text">地址域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E8%A6%81%E4%BF%A1%E5%8F%B7"><span class="toc-number">4.</span> <span class="toc-text">重要信号</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BA%BF%E4%BA%8B%E5%8A%A1"><span class="toc-number">5.</span> <span class="toc-text">总线事务</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PCI%E6%80%BB%E7%BA%BF%E4%BA%8B%E5%8A%A1%E6%97%B6%E5%BA%8F"><span class="toc-number">6.</span> <span class="toc-text">PCI总线事务时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E4%BA%8B%E5%8A%A1%E5%B7%A5%E4%BD%9C%E8%BF%87%E7%A8%8B"><span class="toc-number">7.</span> <span class="toc-text">读写事务工作过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#HOST%E5%A4%84%E7%90%86%E5%99%A8%E8%AE%BF%E9%97%AEPCI%E8%AE%BE%E5%A4%87"><span class="toc-number">7.1.</span> <span class="toc-text">HOST处理器访问PCI设备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#PCI%E8%AE%BE%E5%A4%87%E8%AF%BB%E5%86%99%E4%B8%BB%E5%AD%98%E5%82%A8%E5%99%A8"><span class="toc-number">7.2.</span> <span class="toc-text">PCI设备读写主存储器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/FPGA/" title="FPGA">FPGA<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/linux-系统/" title="linux 系统">linux 系统<sup>3</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/系统配置/" title="系统配置">系统配置<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/test/" title="test">test<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/C-lang/" title="C-lang">C-lang<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://coderq.com" target="_blank" title="一个面向程序员交流分享的新一代社区">码农圈</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.neu.edu.cn" target="_blank" title="东百带学">东百带学</a>
+            
+          </li>
+        
+          <li>
+            
+            	<a href="https://www.henu.edu.cn" target="_blank" title="开封师专">开封师专</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=b3593ceb&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<section class="info">
+		<p> Kunta-Seana <br/>
+			欢迎来到我的技术世界</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<p class="copyright">
+		Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2023 
+		
+		<a href="/about" target="_blank" title="kunta">kunta</a>
+		
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
