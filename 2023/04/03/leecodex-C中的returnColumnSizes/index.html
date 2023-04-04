@@ -15,7 +15,7 @@
 
   <meta charset="UTF-8">
   
-    <title>leecodex C中一些恶心的东西 | SEANAMO</title>
+    <title>leecode C中的 `int** returnColumnSizes` | SEANAMO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     
     <meta name="author" content="kunta">
@@ -24,19 +24,19 @@
     
     <meta name="description" content="leecode中对于C的编程者很不友好，其中有两个很恶心的指针。这里借助一个题目说明一下。 链接: 螺旋矩阵 解决问题的代码，以及注释中对 C 语言解法两个二级指针的说明，CNM 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596">
 <meta property="og:type" content="article">
-<meta property="og:title" content="leecodex C中一些恶心的东西">
-<meta property="og:url" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/index.html">
+<meta property="og:title" content="leecode C中的 &#96;int** returnColumnSizes&#96;">
+<meta property="og:url" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/index.html">
 <meta property="og:site_name" content="SEANAMO">
 <meta property="og:description" content="leecode中对于C的编程者很不友好，其中有两个很恶心的指针。这里借助一个题目说明一下。 链接: 螺旋矩阵 解决问题的代码，以及注释中对 C 语言解法两个二级指针的说明，CNM 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/pointer_num.png">
-<meta property="og:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/pointer_arr.png">
+<meta property="og:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/pointer_num.png">
+<meta property="og:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/pointer_arr.png">
 <meta property="article:published_time" content="2023-04-03T07:26:28.000Z">
-<meta property="article:modified_time" content="2023-04-03T08:21:29.259Z">
+<meta property="article:modified_time" content="2023-04-04T11:25:31.491Z">
 <meta property="article:author" content="kunta">
 <meta property="article:tag" content="C-lang">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/pointer_num.png">
+<meta name="twitter:image" content="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/pointer_num.png">
 
     
     <link rel="alternative" href="/atom.xml" title="SEANAMO" type="application/atom+xml">
@@ -98,7 +98,7 @@
 		<header class="article-info clearfix">
   <h1 itemprop="name">
     
-      <a href="/2023/04/03/leecodex-C中一些恶心的东西/" title="leecodex C中一些恶心的东西" itemprop="url">leecodex C中一些恶心的东西</a>
+      <a href="/2023/04/03/leecodex-C中的returnColumnSizes/" title="leecode C中的 `int** returnColumnSizes`" itemprop="url">leecode C中的 `int** returnColumnSizes`</a>
   </h1>
   <p class="article-author">By
        
@@ -127,10 +127,10 @@
 <p><code>int **</code>中，后一个<code>*</code>告诉我们这是个指针变量。<br>前一个<code>*</code>和<code>int</code>合并来看，<code>int *</code>告诉我们，这个指针变量，保存的地址对应的数据类型是<code>int *</code>，也是一个指针。</p>
 <p>先从<code>p</code>出发，一级解引用，<code>*p</code>，将拿到其指向的那个指针，我们记为<code>p1</code>。<code>p1</code>可以是指向单个数据的指针，也可以是指向另一个数组的指针，也可以是另一个指针数组中的首个元素。决定于编程者如何对<code>*p</code>进行初始化。</p>
 <p>其实三种情况是一样的，对于<code>int ** p</code>来说，<code>p</code>是一个二级指针，两级的指针都指向一个数组。<br>当<code>** p</code>的第一个维度指向的长度为1，即<code>*p</code>的长度为1，那么就表明<code>p1</code>就是单独的一个指针，指向另一个<code>int</code>数组，这样的指针<code>p</code>就是传入参数<code>int ** returnColumnSizes</code>，它表示的是返回的数组中，每一行有多少列（多少元素）。</p>
-<img src="/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/pointer_num.png" class="" title="pointer_num">
+<img src="/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/pointer_num.png" class="" title="pointer_num">
 
 <p>当<code>** p</code>的第一个维度指向的长度为n，即<code>*p</code>的长度为n，那么就表明<code>p1</code>就是另一个指针数组的首个元素，<code>p1</code>所在数组的每个元素还将指向其他的数组，这样指针变量<code>p</code>就能模拟一个二维数组的结构，这也是题目中要返回的数组<code>int ** arr</code>初始化过程的目的。</p>
-<img src="/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/pointer_arr.png" class="" title="pointer_arr">  
+<img src="/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/pointer_arr.png" class="" title="pointer_arr">  
 	</div>
 		<footer class="article-footer clearfix">
 <div class="article-catetags">
@@ -147,7 +147,7 @@
 
 	<div class="article-share" id="share">
 	
-	  <div data-url="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E4%B8%80%E4%BA%9B%E6%81%B6%E5%BF%83%E7%9A%84%E4%B8%9C%E8%A5%BF/" data-title="leecodex C中一些恶心的东西 | SEANAMO" data-tsina="" class="share clearfix">
+	  <div data-url="http://example.com/2023/04/03/leecodex-C%E4%B8%AD%E7%9A%84returnColumnSizes/" data-title="leecode C中的 `int** returnColumnSizes` | SEANAMO" data-tsina="" class="share clearfix">
 	  </div>
 	
 	</div>
